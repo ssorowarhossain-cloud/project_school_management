@@ -1,0 +1,61 @@
+class Course:
+    def __init__(self, course_name):
+        self.course_name = course_name
+
+    def __str__(self):
+        return self.course_name
+class Student:
+    def __init__(self, name, roll, password):
+        self.name = name
+        self.roll = roll
+        self.courses = []
+        self.__password = password   # private variable
+
+    def enroll_course(self, course):
+        self.courses.append(course)
+
+    def get_password(self):
+        return self.__password
+
+    def to_file_string(self):
+        courses = ",".join([str(course) for course in self.courses])
+        return f"{self.roll}|{self.name}|{courses}"
+FILE_NAME = "students.txt"
+
+def save_student(student):
+    with open(FILE_NAME, "a", encoding="utf-8") as file:
+        file.write(student.to_file_string() + "\n")
+def show_all_students():
+    try:
+        with open(FILE_NAME, "r", encoding="utf-8") as file:
+            print("\n------ Student List ------")
+            for line in file:
+                roll, name, courses = line.strip().split("|")
+                course_list = courses.split(",") if courses else []
+                print(f"Roll: {roll}, Name: {name}, Courses: {course_list}")
+    except FileNotFoundError:
+        print("No student records found!")
+# Courses
+math = Course("Math")
+science = Course("Science")
+english = Course("English")
+
+# Student 1
+student1 = Student("Sorowar", 1, "sorowar@123")
+student1.enroll_course(math)
+student1.enroll_course(science)
+save_student(student1)
+
+# Student 2
+student2 = Student("Rabbil", 2, "rabbil@456")
+student2.enroll_course(english)
+student2.enroll_course(math)
+save_student(student2)
+
+# Student 3
+student3 = Student("Anjar", 3, "anjar@789")
+student3.enroll_course(science)
+save_student(student3)
+
+# Show All Students
+show_all_students()
