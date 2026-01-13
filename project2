@@ -1,0 +1,68 @@
+class Course:
+    def __init__(self, course_name):
+        self.course_name = course_name
+
+    def __str__(self):
+        return self.course_name
+class Student:
+    FILE_NAME = "students.txt"
+
+    def __init__(self, name, roll, password):
+        self.name = name
+        self.roll = roll
+        self.courses = []
+        self.__password = password   # Encapsulation
+
+    # ---------- Instance Methods ----------
+    def enroll_course(self, course):
+        self.courses.append(course)
+
+    def get_password(self):
+        return self.__password
+
+    def to_file_string(self):
+        courses = ",".join(str(course) for course in self.courses)
+        return f"{self.roll}|{self.name}|{courses}"
+
+    def save(self):
+        """Save current student to file"""
+        with open(self.FILE_NAME, "a", encoding="utf-8") as file:
+            file.write(self.to_file_string() + "\n")
+
+    # ---------- Class Method ----------
+    @classmethod
+    def show_all_students(cls):
+        """Read and display all students from file"""
+        try:
+            with open(cls.FILE_NAME, "r", encoding="utf-8") as file:
+                print("\n------ All Enrolled Students ------")
+                for line in file:
+                    roll, name, courses = line.strip().split("|")
+                    course_list = courses.split(",") if courses else []
+                    print(f"Roll: {roll} | Name: {name} | Courses: {course_list}")
+        except FileNotFoundError:
+            print("No student data found.")
+# Courses
+math = Course("Math")
+science = Course("Science")
+english = Course("English")
+
+# Student 1
+student1 = Student("Sorowar", 1, "sorowar@abc.com")
+student1.enroll_course(math)
+student1.enroll_course(science)
+student1.save()
+
+# Student 2
+student2 = Student("Rabbil", 2, "rabbil@xyz.com")
+student2.enroll_course(english)
+student2.save()
+
+# Student 3
+student3 = Student("Anjar", 3, "anjar@123.com")
+student3.enroll_course(math)
+student3.enroll_course(science)
+student3.save()
+
+# Show all students (SMART CALL)
+Student.show_all_students()
